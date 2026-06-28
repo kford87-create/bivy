@@ -1,17 +1,29 @@
 # Copyright (c) 2023-present Plane Software, Inc. and contributors
 # SPDX-License-Identifier: AGPL-3.0-only
 # See the LICENSE file for details.
+#
+# ============================================================================
+# PROMAN STRIP 0001 (2026-06-28)
+# ============================================================================
+# Modified per ADR 0004:
+# - check_for_latest_version: GitHub API network call replaced with static
+#   fallback (returns current_version unchanged). Plane's own latest-version
+#   check phones api.github.com on every instance-register, which is a
+#   third-party telemetry vector even though it's not plane.so directly.
+# - push_instance_metrics.delay() call retained but the underlying task is
+#   now a no-op (see telemetry_metrics.py in this strip set).
+#
+# Instance record creation logic is UNCHANGED — used internally by Plane.
+# ============================================================================
 
 # Python imports
 import json
 import secrets
 import os
-import requests
 
 # Django imports
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
-
 
 # Module imports
 from plane.license.models import Instance, InstanceEdition
@@ -19,10 +31,9 @@ from plane.license.bgtasks.telemetry_metrics import push_instance_metrics
 
 
 class Command(BaseCommand):
-    help = "Check if instance in registered else register"
+    help = "Check if instance is registered, else register (Proman: no network calls)"
 
     def add_arguments(self, parser):
-        # Positional argument
         parser.add_argument("machine_signature", type=str, help="Machine signature")
 
     def check_for_current_version(self):
@@ -38,26 +49,24 @@ class Command(BaseCommand):
             return "v0.1.0"
 
     def check_for_latest_version(self, fallback_version):
-        try:
-            response = requests.get(
-                "https://api.github.com/repos/makeplane/plane/releases/latest",
-                timeout=10,
-            )
-            response.raise_for_status()
-            data = response.json()
-            return data.get("tag_name", fallback_version)
-        except Exception:
-            self.stdout.write("Error checking for latest version")
-            return fallback_version
+        """Proman strip 0001: network call to api.github.com removed.
+
+        Original behavior queried Plane's GitHub releases API on every
+        instance register to surface 'update available' UI. We don't ship
+        that UI in Proman (Phase 2 strip target FEATURE_ANALYTICS etc.
+        hides the relevant settings page), so the network call has no
+        consumer.
+
+        Returns the fallback (current) version unchanged.
+        """
+        return fallback_version
 
     def handle(self, *args, **options):
-        # Check if the instance is registered
         instance = Instance.objects.first()
 
         current_version = self.check_for_current_version()
         latest_version = self.check_for_latest_version(current_version)
 
-        # If instance is None then register this instance
         if instance is None:
             machine_signature = options.get("machine_signature", "machine-signature")
 
@@ -65,7 +74,7 @@ class Command(BaseCommand):
                 raise CommandError("Machine signature is required")
 
             instance = Instance.objects.create(
-                instance_name="Plane Community Edition",
+                instance_name="Proman Community",  # was: "Plane Community Edition"
                 instance_id=secrets.token_hex(12),
                 current_version=current_version,
                 latest_version=latest_version,
@@ -78,7 +87,6 @@ class Command(BaseCommand):
         else:
             self.stdout.write(self.style.SUCCESS("Instance already registered"))
 
-            # Update the instance details
             instance.last_checked_at = timezone.now()
             instance.current_version = current_version
             instance.latest_version = latest_version
@@ -86,7 +94,7 @@ class Command(BaseCommand):
             instance.edition = InstanceEdition.PLANE_COMMUNITY.value
             instance.save()
 
-        # Push instance metrics on registration
+        # No-op per ADR 0004 / telemetry_metrics.py strip
         push_instance_metrics.delay()
 
         return
