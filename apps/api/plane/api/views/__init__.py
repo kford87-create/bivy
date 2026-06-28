@@ -2,6 +2,9 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # See the LICENSE file for details.
 
+# Proman additions (ADR 0007)
+from .proman_features import PromanFeaturesEndpoint
+
 from .project import (
     ProjectListCreateAPIEndpoint,
     ProjectDetailAPIEndpoint,
