@@ -2,8 +2,9 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # See the LICENSE file for details.
 
-# Proman additions (ADR 0007)
+# Proman additions (ADR 0007 + ADR 0002)
 from .proman_features import PromanFeaturesEndpoint
+from .calcom_webhook import CalcomWebhookEndpoint
 
 from .project import (
     ProjectListCreateAPIEndpoint,

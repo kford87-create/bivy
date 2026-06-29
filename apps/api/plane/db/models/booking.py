@@ -138,3 +138,78 @@ class BookingLink(BaseModel):
 
     def __str__(self):
         return f"{self.workspace_id}/{self.slug} → project {self.project_id}"
+
+
+class CalcomBookingEvent(BaseModel):
+    """Audit log + idempotency key for Cal.com booking webhook events.
+
+    Per ADR 0002. One row per unique Cal.com booking ID. Re-processing the
+    same booking ID is a no-op (the unique constraint on calcom_booking_id
+    catches the second attempt).
+
+    Status lifecycle:
+      received   - webhook arrived, signature verified, persisted
+      processing - auto-scaffold worker picked it up
+      success    - all template work items created
+      failed     - worker errored; error_message populated
+      ignored    - BookingLink not found or disabled
+
+    Stuck-in-processing detection (events sitting in 'processing' for >10
+    minutes due to worker crashes) is a v1.5 cleanup task. For v1, the
+    operator manually re-queues if needed.
+    """
+
+    STATUS_CHOICES = (
+        ("received", "Received"),
+        ("processing", "Processing"),
+        ("success", "Success"),
+        ("failed", "Failed"),
+        ("ignored", "Ignored"),
+    )
+
+    workspace = models.ForeignKey(
+        "db.Workspace",
+        on_delete=models.CASCADE,
+        related_name="calcom_booking_events",
+        null=True,
+        blank=True,
+    )
+    booking_link = models.ForeignKey(
+        BookingLink,
+        on_delete=models.SET_NULL,
+        related_name="booking_events",
+        null=True,
+        blank=True,
+    )
+
+    # Idempotency key — Cal.com's booking primary key. Unique enforced.
+    calcom_booking_id = models.BigIntegerField(unique=True)
+    calcom_event_type_id = models.IntegerField(null=True, blank=True)
+
+    # Full webhook payload for debugging + replay
+    payload = models.JSONField(default=dict)
+
+    status = models.CharField(
+        max_length=16,
+        choices=STATUS_CHOICES,
+        default="received",
+    )
+
+    # Track which Plane issues we created (Issue UUIDs as strings)
+    created_issue_ids = models.JSONField(default=list)
+
+    error_message = models.TextField(blank=True, default="")
+    processed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Cal.com booking event"
+        verbose_name_plural = "Cal.com booking events"
+        db_table = "calcom_booking_events"
+        ordering = ("-created_at",)
+        indexes = [
+            models.Index(fields=["status"]),
+            models.Index(fields=["booking_link", "-created_at"]),
+        ]
+
+    def __str__(self):
+        return f"calcom:{self.calcom_booking_id} [{self.status}]"
