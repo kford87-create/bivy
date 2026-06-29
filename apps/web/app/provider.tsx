@@ -15,6 +15,8 @@ import { Toast } from "@plane/propel/toast";
 import { resolveGeneralTheme } from "@plane/utils";
 // mobx store provider
 import { StoreProvider } from "@/lib/store-context";
+// Bivy — feature flag provider (Phase 4 wire-up of Phase 2 Step 2 / ADR 0007)
+import { BivyProvider } from "@/core/lib/bivy/context";
 
 // lazy imports
 const AppProgressBar = lazy(function AppProgressBar() {
@@ -47,7 +49,9 @@ export function AppProvider(props: IAppProvider) {
           <StoreWrapper>
             <InstanceWrapper>
               <Suspense>
-                <SWRConfig value={WEB_SWR_CONFIG}>{children}</SWRConfig>
+                <SWRConfig value={WEB_SWR_CONFIG}>
+                  <BivyProvider>{children}</BivyProvider>
+                </SWRConfig>
               </Suspense>
             </InstanceWrapper>
           </StoreWrapper>

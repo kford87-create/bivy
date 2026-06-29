@@ -23,6 +23,8 @@ import icon512 from "@/app/assets/icons/icon-512x512.png?url";
 
 // local
 import { AppProvider } from "./provider";
+// Bivy — AGPL §13 source-code link (floating in bottom-right of every page)
+import { AGPLFooter } from "@/core/components/bivy/agpl-footer";
 
 export const meta = () => [
   { title: "Plane | Simple, extensible, open-source project management tool." },
@@ -85,6 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className={cn("relative flex h-screen w-full flex-col overflow-hidden", "app-container")}>
             <main className="relative h-full w-full overflow-hidden">{children}</main>
           </div>
+          <AGPLFooter variant="floating" />
         </AppProvider>
       </body>
       {!!isSessionRecorderEnabled && process.env.VITE_SESSION_RECORDER_KEY && (

@@ -3,6 +3,8 @@
 @import "@plane/propel/styles/react-day-picker.css";
 @import "./power-k.css";
 @import "./emoji.css";
+/* Bivy Phase 4 — must come AFTER @plane/tailwind-config to override semantic tokens */
+@import "./bivy-overrides.css";
 @plugin "@tailwindcss/typography";
 
 /* stickies and editor colors */

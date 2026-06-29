@@ -1,0 +1,83 @@
+/*
+ * Bivy Phase 4 — brand token overrides for Plane's Tailwind theme.
+ * Per DESIGN.md (paper + teal + Hubot Sans system).
+ *
+ * Loaded AFTER Plane's variables.css so these definitions cascade and
+ * override the relevant semantic tokens. This keeps Plane's 1309-line
+ * variables.css untouched — quarterly upstream merges (ADR 0003) only
+ * conflict if Plane changes the same semantic-token names we override.
+ *
+ * Phase 4 iteration plan:
+ *   1. (this file) Override paper/ink/teal at the top-level token layer.
+ *   2. Phase 4.1 — sweep components for hardcoded Plane tokens that bypass
+ *      the cascade (e.g. inline classNames using neutral-* directly).
+ *   3. Phase 4.2 — typography pass (load Hubot Sans, override font stack).
+ *
+ * If a customer ever asks for dark mode (out of scope at v1), add a
+ * [data-theme="dark"] block here with the inverted palette.
+ */
+
+@layer base {
+  :root,
+  :host {
+    /* ============================================================
+     * Bivy core palette — DESIGN.md (paper + teal + warm warn)
+     * ============================================================ */
+    --bivy-ink:          #111418;
+    --bivy-ink-soft:     #3d434a;
+    --bivy-ink-quiet:    #6b7280;
+    --bivy-paper:        #ffffff;
+    --bivy-paper-2:      #fafafa;
+    --bivy-paper-3:      #f4f4f5;
+    --bivy-rule:         #e4e4e7;
+    --bivy-rule-soft:    #f0f0f1;
+    --bivy-accent:       #0a7c61;
+    --bivy-accent-deep:  #065f46;
+    --bivy-accent-soft:  #d1fae5;
+    --bivy-warn:         #b91c1c;
+
+    /* ============================================================
+     * Plane semantic-token overrides — map their tokens onto ours.
+     * Plane's hierarchy: bg-canvas > bg-surface > bg-layer-1/2/3.
+     * Bivy uses 3 levels: paper / paper-2 / paper-3.
+     * ============================================================ */
+    --bg-canvas:               var(--bivy-paper-2);
+    --bg-surface-1:            var(--bivy-paper);
+    --bg-surface-2:            var(--bivy-paper-2);
+    --bg-layer-1:              var(--bivy-paper-3);
+    --bg-layer-1-hover:        var(--bivy-paper-3);
+    --bg-layer-2:              var(--bivy-paper);
+    --bg-layer-2-hover:        var(--bivy-paper-2);
+    --bg-layer-3:              var(--bivy-paper-2);
+    --bg-layer-3-hover:        var(--bivy-paper-3);
+
+    /* Aliases also used by some components for the Bivy CSS variables. */
+    --ink:          var(--bivy-ink);
+    --ink-soft:     var(--bivy-ink-soft);
+    --ink-quiet:    var(--bivy-ink-quiet);
+    --paper:        var(--bivy-paper);
+    --paper-2:      var(--bivy-paper-2);
+    --paper-3:      var(--bivy-paper-3);
+    --rule:         var(--bivy-rule);
+    --rule-soft:    var(--bivy-rule-soft);
+    --accent:       var(--bivy-accent);
+    --accent-deep:  var(--bivy-accent-deep);
+    --accent-soft:  var(--bivy-accent-soft);
+    --warn:         var(--bivy-warn);
+  }
+}
+
+/*
+ * Typography — Hubot Sans loading is a Phase 4.2 follow-up. For now, the
+ * Bivy components fall back to Plane's existing font stack via system-ui.
+ * When ready:
+ *
+ *   @font-face {
+ *     font-family: "Hubot Sans";
+ *     src: url("/fonts/Hubot-Sans.woff2") format("woff2-variations");
+ *     font-weight: 200 900;
+ *     font-stretch: 75% 125%;
+ *     font-display: swap;
+ *   }
+ *   :root { --font-base: "Hubot Sans", -apple-system, ... }
+ */
