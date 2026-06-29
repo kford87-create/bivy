@@ -1,21 +1,21 @@
-# Proman Phase 3 Step 3 (2026-06-28)
+# Bivy Phase 3 Step 3 (2026-06-28)
 # Per ADR 0002 — bundles Cal.com (AGPL-3.0) alongside Plane.
 #
 # Usage:
-#   docker compose -f docker-compose.yml -f docker-compose.proman.yml up
+#   docker compose -f docker-compose.yml -f docker-compose.bivy.yml up
 #
 # This OVERLAY file extends Plane's docker-compose.yml. It is intentionally
 # kept separate so quarterly upstream Plane merges (per ADR 0003) do not
 # conflict with our Cal.com additions.
 #
-# Required environment (set in .env.proman alongside Plane's .env):
+# Required environment (set in .env.bivy alongside Plane's .env):
 #   CALCOM_DATABASE_PASSWORD       Postgres password for the calcom DB user
 #   CALCOM_NEXTAUTH_SECRET         openssl rand -base64 32
-#   CALCOM_NEXTAUTH_URL            e.g. https://proman.app/cal
-#   CALCOM_PUBLIC_WEBAPP_URL       e.g. https://proman.app/cal
-#   CALCOM_WEBHOOK_SECRET          MUST match Proman backend's env var of same name
+#   CALCOM_NEXTAUTH_URL            e.g. https://teambivy.com/cal
+#   CALCOM_PUBLIC_WEBAPP_URL       e.g. https://teambivy.com/cal
+#   CALCOM_WEBHOOK_SECRET          MUST match Bivy backend's env var of same name
 #   CALCOM_ENCRYPTION_KEY          openssl rand -base64 32
-#   CALCOM_EMAIL_FROM              hello@proman.app
+#   CALCOM_EMAIL_FROM              hello@teambivy.com
 #   AWS_SES_SMTP_HOST              email-smtp.us-east-1.amazonaws.com
 #   AWS_SES_SMTP_USER              SES SMTP credential user
 #   AWS_SES_SMTP_PASSWORD          SES SMTP credential password
@@ -29,7 +29,7 @@ services:
   # Uses AWS SES SMTP for transactional email.
   # ----------------------------------------------------------------
   cal:
-    container_name: proman-cal
+    container_name: bivy-cal
     image: calcom/cal.com:latest
     restart: always
     depends_on:
@@ -54,8 +54,8 @@ services:
       CALCOM_LICENSE_KEY: ""
       NEXT_PUBLIC_LICENSE_CONSENT: ""
 
-      # Webhooks — Cal.com posts to Proman backend's calcom-webhook endpoint
-      # CALCOM_WEBHOOK_SECRET MUST match the Proman backend's env var of the
+      # Webhooks — Cal.com posts to Bivy backend's calcom-webhook endpoint
+      # CALCOM_WEBHOOK_SECRET MUST match the Bivy backend's env var of the
       # same name (see apps/api/plane/api/views/calcom_webhook.py).
       CALCOM_WEBHOOK_SECRET: ${CALCOM_WEBHOOK_SECRET}
 
@@ -87,7 +87,7 @@ services:
   # before the cal service starts. Completes-and-exits.
   # ----------------------------------------------------------------
   cal-migrator:
-    container_name: proman-cal-migrator
+    container_name: bivy-cal-migrator
     image: calcom/cal.com:latest
     restart: "no"
     depends_on:
@@ -107,7 +107,7 @@ services:
   # plane-db Postgres instance if it doesn't exist. Completes-and-exits.
   # ----------------------------------------------------------------
   cal-db-init:
-    container_name: proman-cal-db-init
+    container_name: bivy-cal-db-init
     image: postgres:15.7-alpine
     restart: "no"
     depends_on:

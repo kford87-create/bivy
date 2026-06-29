@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # See the LICENSE file for details.
 #
-# Proman Phase 3 Step 6 — public booking-link lookup endpoint.
+# Bivy Phase 3 Step 6 — public booking-link lookup endpoint.
 # Per ADR 0002 + dashboard handoff Q1=A (iframe Cal.com).
 #
 # Unauthenticated GET endpoint that resolves a public booking URL
@@ -17,7 +17,7 @@ from plane.db.models import BookingLink, Workspace
 
 
 class PublicBookingLinkEndpoint(APIView):
-    """GET /api/v1/proman/book/<workspace_slug>/<booking_slug>/
+    """GET /api/v1/bivy/book/<workspace_slug>/<booking_slug>/
 
     Public, unauthenticated. Returns the Cal.com event-type slug for the
     booking page to embed, plus minimal branding metadata (project name,

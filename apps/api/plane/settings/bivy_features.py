@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # See the LICENSE file for details.
 
-"""Proman feature flags.
+"""Bivy feature flags.
 
-Per ADR 0007 (proman repo: docs/decisions/0007-feature-flags-over-strip.md),
+Per ADR 0007 (bivy repo: docs/decisions/0007-feature-flags-over-strip.md),
 Plane features that would otherwise be stripped to achieve Basecamp-simple
 UX are instead hidden behind config-driven feature flags. Default OFF for
 v1. Customers asking for a feature flip it on via environment variable.
@@ -13,11 +13,11 @@ Per-workspace overrides arrive in v1.5 — see ADR 0007 § "Per-workspace
 overrides."
 
 The flag map is consumed by:
-- The `requires_feature` decorator in `plane.utils.proman_features`
-- The `/api/v1/proman/features` API endpoint
-- The frontend on app boot via `useProman()`
+- The `requires_feature` decorator in `plane.utils.bivy_features`
+- The `/api/v1/bivy/features` API endpoint
+- The frontend on app boot via `useBivy()`
 
-See `docs/FEATURE_REGISTRY.md` in the proman repo for the full per-flag
+See `docs/FEATURE_REGISTRY.md` in the bivy repo for the full per-flag
 description, gates, and when-to-flip-on criteria.
 """
 
@@ -32,7 +32,7 @@ def _bool_env(key: str, default: bool = False) -> bool:
     return raw.strip().lower() in ("1", "true", "yes", "on")
 
 
-PROMAN_FEATURES = {
+BIVY_FEATURES = {
     "cycles":       _bool_env("FEATURE_CYCLES",       default=False),
     "modules":      _bool_env("FEATURE_MODULES",      default=False),
     "estimates":    _bool_env("FEATURE_ESTIMATES",    default=False),

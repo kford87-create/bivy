@@ -1,4 +1,4 @@
-# Proman Phase 3 Step 2 (2026-06-28)
+# Bivy Phase 3 Step 2 (2026-06-28)
 # Per ADR 0002 — adds CalcomBookingEvent for webhook idempotency + audit log.
 #
 # Hand-written migration. After pulling, run:
@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
     initial = False
 
     dependencies = [
-        ("db", "0122_proman_booking_link_template"),
+        ("db", "0122_bivy_booking_link_template"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 

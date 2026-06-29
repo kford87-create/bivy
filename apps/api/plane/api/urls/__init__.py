@@ -10,7 +10,7 @@ from .intake import urlpatterns as intake_patterns
 from .label import urlpatterns as label_patterns
 from .member import urlpatterns as member_patterns
 from .module import urlpatterns as module_patterns
-from .proman_features import urlpatterns as proman_features_patterns
+from .bivy_features import urlpatterns as bivy_features_patterns
 from .project import urlpatterns as project_patterns
 from .public_booking import urlpatterns as public_booking_patterns
 from .state import urlpatterns as state_patterns
@@ -28,7 +28,7 @@ urlpatterns = [
     *label_patterns,
     *member_patterns,
     *module_patterns,
-    *proman_features_patterns,
+    *bivy_features_patterns,
     *project_patterns,
     *public_booking_patterns,
     *state_patterns,

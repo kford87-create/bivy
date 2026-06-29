@@ -3,14 +3,14 @@
 # See the LICENSE file for details.
 #
 # ============================================================================
-# PROMAN PHASE 3 STEP 1 (2026-06-28)
+# BIVY PHASE 3 STEP 1 (2026-06-28)
 # ============================================================================
-# Booking module data model. New tables added by the Proman fork; not part
+# Booking module data model. New tables added by the Bivy fork; not part
 # of upstream Plane.
 #
-# Per ADR 0002 (proman repo: docs/decisions/0002-calcom-for-scheduling.md),
+# Per ADR 0002 (bivy repo: docs/decisions/0002-calcom-for-scheduling.md),
 # the scheduling substrate itself lives in bundled Cal.com. The models here
-# map a Proman BookingLink → a Cal.com event type + a Plane project + a
+# map a Bivy BookingLink → a Cal.com event type + a Plane project + a
 # scaffold template. When Cal.com fires a BOOKING_CREATED webhook, the
 # auto-scaffold worker reads the BookingLink, applies the BookingTemplate
 # to the target project, and creates the scaffolded work items.
@@ -88,7 +88,7 @@ class BookingLink(BaseModel):
     """A public booking page tied to a Plane project + Cal.com event type.
 
     One BookingLink per (project, slug) combination within a workspace.
-    The public URL is `proman.app/book/<workspace_slug>/<booking_slug>`
+    The public URL is `teambivy.com/book/<workspace_slug>/<booking_slug>`
     (or whichever shape Phase 3 Q1 lands on — iframe / subdomain / clone).
 
     `calcom_event_type_id` mirrors the Cal.com event type's primary key.

@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // See the LICENSE file for details.
 //
-// Proman Phase 3 Step 5 — AGPL source-code link footer.
+// Bivy Phase 3 Step 5 — AGPL source-code link footer.
 // Per AGPL §13: network-served modified AGPL software must offer source.
 //
 // Two source repositories must be linked (both AGPL-3.0 cores):
-//   - Plane fork (Proman): https://github.com/kford87-create/plane
+//   - Plane fork (Bivy): https://github.com/kford87-create/bivy
 //   - Cal.com (bundled):   https://github.com/calcom/cal.com
 //
 // Renders a small, restrained line — `--ink-quiet` color, 0.82rem font.
@@ -15,12 +15,12 @@
 
 import { JSX } from "react";
 
-const PROMAN_FORK_URL = "https://github.com/kford87-create/plane";
+const BIVY_FORK_URL = "https://github.com/kford87-create/bivy";
 const CALCOM_UPSTREAM_URL = "https://github.com/calcom/cal.com";
 
 export interface AGPLFooterProps {
-  /** Override the fork URL if Proman gets renamed / re-hosted. */
-  promanForkUrl?: string;
+  /** Override the fork URL if Bivy gets renamed / re-hosted. */
+  bivyForkUrl?: string;
   /** Override the Cal.com source link if we ever fork Cal.com too. */
   calcomUrl?: string;
   /** Extra className passthrough for layout-specific spacing. */
@@ -28,13 +28,13 @@ export interface AGPLFooterProps {
 }
 
 export function AGPLFooter({
-  promanForkUrl = PROMAN_FORK_URL,
+  bivyForkUrl = BIVY_FORK_URL,
   calcomUrl = CALCOM_UPSTREAM_URL,
   className = "",
 }: AGPLFooterProps): JSX.Element {
   return (
     <footer
-      className={`proman-agpl-footer ${className}`.trim()}
+      className={`bivy-agpl-footer ${className}`.trim()}
       style={{
         fontSize: "0.82rem",
         color: "var(--ink-quiet, #6b7280)",
@@ -43,9 +43,9 @@ export function AGPLFooter({
         borderTop: "1px solid var(--rule-soft, #f0f0f1)",
       }}
     >
-      Proman runs on{" "}
+      Bivy runs on{" "}
       <a
-        href={promanForkUrl}
+        href={bivyForkUrl}
         target="_blank"
         rel="noopener noreferrer"
         style={{
@@ -69,7 +69,7 @@ export function AGPLFooter({
       </a>{" "}
       (both AGPL-3.0).{" "}
       <a
-        href={promanForkUrl}
+        href={bivyForkUrl}
         target="_blank"
         rel="noopener noreferrer"
         style={{

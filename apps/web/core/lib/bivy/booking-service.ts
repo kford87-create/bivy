@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // See the LICENSE file for details.
 //
-// Proman Phase 3 Steps 6 + 7 — frontend service for booking module API.
+// Bivy Phase 3 Steps 6 + 7 — frontend service for booking module API.
 // Wraps the workspace-scoped REST endpoints.
 
 export interface BookingLink {
@@ -88,7 +88,7 @@ export async function resolvePublicBooking(
   bookingSlug: string,
 ): Promise<PublicBookingResolution> {
   return request<PublicBookingResolution>(
-    `/api/v1/proman/book/${workspaceSlug}/${bookingSlug}/`,
+    `/api/v1/bivy/book/${workspaceSlug}/${bookingSlug}/`,
     { method: "GET" },
   );
 }
@@ -103,7 +103,7 @@ export async function listBookingLinks(
   if (filters.project_id) params.set("project_id", filters.project_id);
   const qs = params.toString() ? `?${params.toString()}` : "";
   return request<BookingLink[]>(
-    `/api/v1/workspaces/${workspaceSlug}/proman/booking-links/${qs}`,
+    `/api/v1/workspaces/${workspaceSlug}/bivy/booking-links/${qs}`,
   );
 }
 
@@ -112,7 +112,7 @@ export async function createBookingLink(
   data: Partial<BookingLink>,
 ): Promise<BookingLink> {
   return request<BookingLink>(
-    `/api/v1/workspaces/${workspaceSlug}/proman/booking-links/`,
+    `/api/v1/workspaces/${workspaceSlug}/bivy/booking-links/`,
     { method: "POST", body: JSON.stringify(data) },
   );
 }
@@ -123,7 +123,7 @@ export async function updateBookingLink(
   data: Partial<BookingLink>,
 ): Promise<BookingLink> {
   return request<BookingLink>(
-    `/api/v1/workspaces/${workspaceSlug}/proman/booking-links/${id}/`,
+    `/api/v1/workspaces/${workspaceSlug}/bivy/booking-links/${id}/`,
     { method: "PATCH", body: JSON.stringify(data) },
   );
 }
@@ -133,7 +133,7 @@ export async function deleteBookingLink(
   id: string,
 ): Promise<void> {
   await request<void>(
-    `/api/v1/workspaces/${workspaceSlug}/proman/booking-links/${id}/`,
+    `/api/v1/workspaces/${workspaceSlug}/bivy/booking-links/${id}/`,
     { method: "DELETE" },
   );
 }
@@ -144,7 +144,7 @@ export async function listBookingTemplates(
   workspaceSlug: string,
 ): Promise<BookingTemplate[]> {
   return request<BookingTemplate[]>(
-    `/api/v1/workspaces/${workspaceSlug}/proman/booking-templates/`,
+    `/api/v1/workspaces/${workspaceSlug}/bivy/booking-templates/`,
   );
 }
 
@@ -153,7 +153,7 @@ export async function createBookingTemplate(
   data: Partial<BookingTemplate>,
 ): Promise<BookingTemplate> {
   return request<BookingTemplate>(
-    `/api/v1/workspaces/${workspaceSlug}/proman/booking-templates/`,
+    `/api/v1/workspaces/${workspaceSlug}/bivy/booking-templates/`,
     { method: "POST", body: JSON.stringify(data) },
   );
 }
@@ -175,6 +175,6 @@ export async function listBookingEvents(
   if (filters.limit) params.set("limit", String(filters.limit));
   const qs = params.toString() ? `?${params.toString()}` : "";
   return request<CalcomBookingEvent[]>(
-    `/api/v1/workspaces/${workspaceSlug}/proman/booking-events/${qs}`,
+    `/api/v1/workspaces/${workspaceSlug}/bivy/booking-events/${qs}`,
   );
 }

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # See the LICENSE file for details.
 #
-# Proman Phase 3 Step 7 — DRF serializers for BookingLink + BookingTemplate.
+# Bivy Phase 3 Step 7 — DRF serializers for BookingLink + BookingTemplate.
 # Per ADR 0002 and dashboard handoff Q2=C (hybrid per-project + workspace UI).
 
 from rest_framework import serializers

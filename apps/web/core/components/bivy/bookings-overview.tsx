@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // See the LICENSE file for details.
 //
-// Proman Phase 3 Step 7 — Workspace bookings overview (Q2=C hybrid half).
+// Bivy Phase 3 Step 7 — Workspace bookings overview (Q2=C hybrid half).
 // Per ADR 0002 + dashboard handoff Q2=C.
 //
 // Workspace-level summary of bookings across all projects + the narrative
@@ -16,7 +16,7 @@ import {
   CalcomBookingEvent,
   listBookingEvents,
   listBookingLinks,
-} from "@/core/lib/proman/booking-service";
+} from "@/core/lib/bivy/booking-service";
 
 export interface BookingsOverviewProps {
   workspaceSlug: string;

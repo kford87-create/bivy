@@ -1,4 +1,4 @@
-# Proman Phase 3 Step 1 (2026-06-28)
+# Bivy Phase 3 Step 1 (2026-06-28)
 # Per ADR 0002 (Cal.com for scheduling) — adds BookingLink + BookingTemplate.
 #
 # Hand-written migration. After pulling, run:

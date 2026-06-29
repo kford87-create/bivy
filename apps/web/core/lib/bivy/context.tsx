@@ -2,15 +2,15 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // See the LICENSE file for details.
 //
-// Proman feature flags — React context provider.
-// Per ADR 0007 (proman repo: docs/decisions/0007-feature-flags-over-strip.md).
+// Bivy feature flags — React context provider.
+// Per ADR 0007 (bivy repo: docs/decisions/0007-feature-flags-over-strip.md).
 //
 // Fetches the flag map once at app boot and makes it available to all
-// descendants. Consumers use useProman() (see apps/web/core/hooks/use-proman.tsx)
-// or <FeatureGate> (see apps/web/core/components/proman/feature-gate.tsx).
+// descendants. Consumers use useBivy() (see apps/web/core/hooks/use-bivy.tsx)
+// or <FeatureGate> (see apps/web/core/components/bivy/feature-gate.tsx).
 //
 // INTEGRATION:
-// Wrap the app's root with <PromanProvider> alongside Plane's existing
+// Wrap the app's root with <BivyProvider> alongside Plane's existing
 // providers. See apps/web/app/provider.tsx — add a wrapper there once this
 // scaffolding is in place. Step 2 of Phase 2 leaves provider wiring as a
 // follow-up task so this commit doesn't entangle with Plane's provider
@@ -19,14 +19,14 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 
 import {
-  DEFAULT_PROMAN_FEATURES,
-  fetchPromanFeatures,
-  PromanFeatures,
+  DEFAULT_BIVY_FEATURES,
+  fetchBivyFeatures,
+  BivyFeatures,
 } from "./features";
 
-export interface PromanContextValue {
+export interface BivyContextValue {
   /** Current feature flag map. Defaults to all-off until fetch completes. */
-  features: PromanFeatures;
+  features: BivyFeatures;
   /** True while the initial fetch is in flight. */
   isLoading: boolean;
   /** Set if the fetch errored; consumer can show a banner or just use defaults. */
@@ -35,8 +35,8 @@ export interface PromanContextValue {
   refetch: () => Promise<void>;
 }
 
-export const PromanContext = createContext<PromanContextValue>({
-  features: DEFAULT_PROMAN_FEATURES,
+export const BivyContext = createContext<BivyContextValue>({
+  features: DEFAULT_BIVY_FEATURES,
   isLoading: true,
   error: null,
   refetch: async () => {
@@ -44,20 +44,20 @@ export const PromanContext = createContext<PromanContextValue>({
   },
 });
 
-interface PromanProviderProps {
+interface BivyProviderProps {
   children: ReactNode;
   /** Override the initial map (useful for tests + SSR). */
-  initialFeatures?: PromanFeatures;
+  initialFeatures?: BivyFeatures;
   /** Skip the API fetch (useful for tests). */
   skipFetch?: boolean;
 }
 
-export function PromanProvider({
+export function BivyProvider({
   children,
-  initialFeatures = DEFAULT_PROMAN_FEATURES,
+  initialFeatures = DEFAULT_BIVY_FEATURES,
   skipFetch = false,
-}: PromanProviderProps) {
-  const [features, setFeatures] = useState<PromanFeatures>(initialFeatures);
+}: BivyProviderProps) {
+  const [features, setFeatures] = useState<BivyFeatures>(initialFeatures);
   const [isLoading, setIsLoading] = useState<boolean>(!skipFetch);
   const [error, setError] = useState<Error | null>(null);
 
@@ -65,7 +65,7 @@ export function PromanProvider({
     setIsLoading(true);
     setError(null);
     try {
-      const next = await fetchPromanFeatures();
+      const next = await fetchBivyFeatures();
       setFeatures(next);
     } catch (e) {
       setError(e instanceof Error ? e : new Error(String(e)));
@@ -86,8 +86,8 @@ export function PromanProvider({
   }, [skipFetch]);
 
   return (
-    <PromanContext.Provider value={{ features, isLoading, error, refetch }}>
+    <BivyContext.Provider value={{ features, isLoading, error, refetch }}>
       {children}
-    </PromanContext.Provider>
+    </BivyContext.Provider>
   );
 }

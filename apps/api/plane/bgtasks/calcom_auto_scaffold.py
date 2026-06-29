@@ -3,10 +3,10 @@
 # See the LICENSE file for details.
 #
 # ============================================================================
-# PROMAN PHASE 3 STEP 2 (2026-06-28)
+# BIVY PHASE 3 STEP 2 (2026-06-28)
 # ============================================================================
 # Cal.com booking auto-scaffold Celery worker.
-# Per ADR 0002 (proman repo: docs/decisions/0002-calcom-for-scheduling.md).
+# Per ADR 0002 (bivy repo: docs/decisions/0002-calcom-for-scheduling.md).
 #
 # Triggered by the Cal.com webhook receiver (apps/api/plane/api/views/
 # calcom_webhook.py) once it has persisted a CalcomBookingEvent and verified

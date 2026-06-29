@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // See the LICENSE file for details.
 //
-// Proman Phase 3 Step 7 — Booking Links panel (per-project Bookings tab).
+// Bivy Phase 3 Step 7 — Booking Links panel (per-project Bookings tab).
 // Per ADR 0002 + dashboard handoff Q2=C (hybrid).
 //
 // Renders within a Plane project's tab strip. Lists BookingLinks scoped to
@@ -21,14 +21,14 @@ import {
   deleteBookingLink,
   listBookingLinks,
   updateBookingLink,
-} from "@/core/lib/proman/booking-service";
+} from "@/core/lib/bivy/booking-service";
 
 export interface BookingLinksPanelProps {
   workspaceSlug: string;
   workspaceId: string;
   projectId: string;
   projectName: string;
-  /** Public base URL for booking pages — e.g. "https://proman.app" */
+  /** Public base URL for booking pages — e.g. "https://teambivy.com" */
   publicBaseUrl?: string;
 }
 

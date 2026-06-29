@@ -4,12 +4,12 @@
 
 from django.urls import path
 
-from plane.api.views import PromanFeaturesEndpoint
+from plane.api.views import BivyFeaturesEndpoint
 
 urlpatterns = [
     path(
-        "proman/features/",
-        PromanFeaturesEndpoint.as_view(http_method_names=["get"]),
-        name="proman-features",
+        "bivy/features/",
+        BivyFeaturesEndpoint.as_view(http_method_names=["get"]),
+        name="bivy-features",
     ),
 ]

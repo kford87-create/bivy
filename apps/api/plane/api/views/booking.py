@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # See the LICENSE file for details.
 #
-# Proman Phase 3 Step 7 — BookingLink + BookingTemplate management API.
+# Bivy Phase 3 Step 7 — BookingLink + BookingTemplate management API.
 # Per ADR 0002 + dashboard handoff Q2=C (hybrid per-project + workspace).
 #
 # Authenticated endpoints. Workspace-scoped via URL path. Authorization

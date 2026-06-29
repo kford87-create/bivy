@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // See the LICENSE file for details.
 //
-// Proman Phase 3 Step 6 — Public booking page (Q1=A iframe Cal.com).
+// Bivy Phase 3 Step 6 — Public booking page (Q1=A iframe Cal.com).
 // Per ADR 0002 and dashboard handoff § Open design question Q1.
 //
-// Wraps the Cal.com booking page in Proman's brand shell. Visitor lands here
+// Wraps the Cal.com booking page in Bivy's brand shell. Visitor lands here
 // (e.g. /book/<workspace>/<slug>), we look up the Cal.com event-type slug,
 // and embed the Cal.com booking flow as an iframe.
 //
@@ -13,7 +13,7 @@
 //   apps/web/app/(public)/book/[workspaceSlug]/[bookingSlug]/route.tsx
 //   loads this component and passes the route params.
 //
-// Cal.com URL pattern (matches docker-compose.proman.yml):
+// Cal.com URL pattern (matches docker-compose.bivy.yml):
 //   https://<host>/cal/<calcom_event_type_slug>
 // The container hostname is internal; we serve through Plane's proxy.
 
@@ -22,7 +22,7 @@ import { JSX, useEffect, useState } from "react";
 import {
   PublicBookingResolution,
   resolvePublicBooking,
-} from "@/core/lib/proman/booking-service";
+} from "@/core/lib/bivy/booking-service";
 
 import { AGPLFooter } from "./agpl-footer";
 
@@ -104,7 +104,7 @@ export function PublicBookingPage({
         >
           ⌥
         </span>
-        <span style={{ fontWeight: 600, fontSize: "1.15rem" }}>Proman</span>
+        <span style={{ fontWeight: 600, fontSize: "1.15rem" }}>Bivy</span>
       </header>
 
       <main

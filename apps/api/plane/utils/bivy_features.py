@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # See the LICENSE file for details.
 
-"""Proman feature-flag helpers.
+"""Bivy feature-flag helpers.
 
 Per ADR 0007. Provides:
 
@@ -11,11 +11,11 @@ Per ADR 0007. Provides:
   HTTP 404 when the flag is OFF. 404 (not 403) is deliberate — the route
   should appear not to exist in installations where the feature is off.
 - `get_features_snapshot()` — returns the full flag dict for the
-  `/api/v1/proman/features` endpoint.
+  `/api/v1/bivy/features` endpoint.
 
 Usage:
 
-    from plane.utils.proman_features import requires_feature
+    from plane.utils.bivy_features import requires_feature
 
     class CycleViewSet(BaseViewSet):
         @requires_feature("cycles")
@@ -33,7 +33,7 @@ from typing import Callable
 from rest_framework import status
 from rest_framework.response import Response
 
-from plane.settings.proman_features import PROMAN_FEATURES
+from plane.settings.bivy_features import BIVY_FEATURES
 
 
 class UnknownFeatureFlag(KeyError):
@@ -43,24 +43,24 @@ class UnknownFeatureFlag(KeyError):
 def is_feature_enabled(flag: str) -> bool:
     """Return True if the named feature flag is enabled.
 
-    Raises UnknownFeatureFlag if the flag isn't in PROMAN_FEATURES — catches
+    Raises UnknownFeatureFlag if the flag isn't in BIVY_FEATURES — catches
     typos at startup or in code review rather than silently returning False.
     """
-    if flag not in PROMAN_FEATURES:
+    if flag not in BIVY_FEATURES:
         raise UnknownFeatureFlag(
-            f"Unknown Proman feature flag: {flag!r}. "
-            f"Known flags: {sorted(PROMAN_FEATURES.keys())}"
+            f"Unknown Bivy feature flag: {flag!r}. "
+            f"Known flags: {sorted(BIVY_FEATURES.keys())}"
         )
-    return PROMAN_FEATURES[flag]
+    return BIVY_FEATURES[flag]
 
 
 def get_features_snapshot() -> dict:
     """Return a shallow copy of the current feature flag map.
 
-    Used by the /api/v1/proman/features endpoint to ship the flag state to
+    Used by the /api/v1/bivy/features endpoint to ship the flag state to
     the frontend on app boot.
     """
-    return dict(PROMAN_FEATURES)
+    return dict(BIVY_FEATURES)
 
 
 def requires_feature(flag: str) -> Callable:
@@ -70,10 +70,10 @@ def requires_feature(flag: str) -> Callable:
     not at the first request.
     """
     # Validate early — UnknownFeatureFlag if mistyped
-    if flag not in PROMAN_FEATURES:
+    if flag not in BIVY_FEATURES:
         raise UnknownFeatureFlag(
             f"@requires_feature({flag!r}) — unknown flag. "
-            f"Known flags: {sorted(PROMAN_FEATURES.keys())}"
+            f"Known flags: {sorted(BIVY_FEATURES.keys())}"
         )
 
     def decorator(view_method: Callable) -> Callable:

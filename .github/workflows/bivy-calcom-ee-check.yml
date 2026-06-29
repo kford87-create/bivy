@@ -1,5 +1,5 @@
-# Proman Phase 3 Step 4 (2026-06-28)
-# Per ADR 0002 — fail builds if Proman code imports from Cal.com's
+# Bivy Phase 3 Step 4 (2026-06-28)
+# Per ADR 0002 — fail builds if Bivy code imports from Cal.com's
 # `packages/features/ee/` directory (commercial-licensed EE code).
 #
 # We bundle Cal.com's AGPL-3.0 core as a service. Touching their EE code
@@ -7,15 +7,15 @@
 # cross the 30-user EE threshold. This guard catches accidental imports
 # before they ship.
 
-name: Proman — Cal.com EE Import Check
+name: Bivy — Cal.com EE Import Check
 
 on:
   pull_request:
     branches:
-      - proman-main
+      - bivy-main
   push:
     branches:
-      - proman-main
+      - bivy-main
 
 jobs:
   ee-import-check:
@@ -28,4 +28,4 @@ jobs:
       - name: Scan for Cal.com EE references
         run: |
           set -euo pipefail
-          ./scripts/proman/check-calcom-ee-imports.sh
+          ./scripts/bivy/check-calcom-ee-imports.sh

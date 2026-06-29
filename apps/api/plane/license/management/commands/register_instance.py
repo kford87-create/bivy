@@ -3,7 +3,7 @@
 # See the LICENSE file for details.
 #
 # ============================================================================
-# PROMAN STRIP 0001 (2026-06-28)
+# BIVY STRIP 0001 (2026-06-28)
 # ============================================================================
 # Modified per ADR 0004:
 # - check_for_latest_version: GitHub API network call replaced with static
@@ -31,7 +31,7 @@ from plane.license.bgtasks.telemetry_metrics import push_instance_metrics
 
 
 class Command(BaseCommand):
-    help = "Check if instance is registered, else register (Proman: no network calls)"
+    help = "Check if instance is registered, else register (Bivy: no network calls)"
 
     def add_arguments(self, parser):
         parser.add_argument("machine_signature", type=str, help="Machine signature")
@@ -49,11 +49,11 @@ class Command(BaseCommand):
             return "v0.1.0"
 
     def check_for_latest_version(self, fallback_version):
-        """Proman strip 0001: network call to api.github.com removed.
+        """Bivy strip 0001: network call to api.github.com removed.
 
         Original behavior queried Plane's GitHub releases API on every
         instance register to surface 'update available' UI. We don't ship
-        that UI in Proman (Phase 2 strip target FEATURE_ANALYTICS etc.
+        that UI in Bivy (Phase 2 strip target FEATURE_ANALYTICS etc.
         hides the relevant settings page), so the network call has no
         consumer.
 
@@ -74,7 +74,7 @@ class Command(BaseCommand):
                 raise CommandError("Machine signature is required")
 
             instance = Instance.objects.create(
-                instance_name="Proman Community",  # was: "Plane Community Edition"
+                instance_name="Bivy Community",  # was: "Plane Community Edition"
                 instance_id=secrets.token_hex(12),
                 current_version=current_version,
                 latest_version=latest_version,

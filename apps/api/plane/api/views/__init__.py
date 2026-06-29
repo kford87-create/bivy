@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # See the LICENSE file for details.
 
-# Proman additions (ADR 0007 + ADR 0002)
-from .proman_features import PromanFeaturesEndpoint
+# Bivy additions (ADR 0007 + ADR 0002)
+from .bivy_features import BivyFeaturesEndpoint
 from .calcom_webhook import CalcomWebhookEndpoint
 from .public_booking import PublicBookingLinkEndpoint
 from .booking import (

@@ -3,19 +3,19 @@
 # See the LICENSE file for details.
 #
 # ============================================================================
-# PROMAN PHASE 3 STEP 2 (2026-06-28)
+# BIVY PHASE 3 STEP 2 (2026-06-28)
 # ============================================================================
 # Cal.com webhook receiver.
-# Per ADR 0002 (proman repo: docs/decisions/0002-calcom-for-scheduling.md).
+# Per ADR 0002 (bivy repo: docs/decisions/0002-calcom-for-scheduling.md).
 #
 # Receives BOOKING_CREATED / BOOKING_CANCELLED / BOOKING_RESCHEDULED webhooks
 # from the bundled Cal.com instance, verifies the HMAC-SHA256 signature, and
 # persists a CalcomBookingEvent + queues the auto-scaffold Celery task.
 #
-# Endpoint: POST /api/v1/proman/calcom-webhook/
+# Endpoint: POST /api/v1/bivy/calcom-webhook/
 # Auth: HMAC-SHA256 signature in the `X-Cal-Signature-256` header.
 #       Secret read from env var CALCOM_WEBHOOK_SECRET (set in
-#       /etc/proman/secrets.env on the server).
+#       /etc/bivy/secrets.env on the server).
 # ============================================================================
 
 import hashlib
@@ -54,7 +54,7 @@ def _verify_calcom_signature(secret: str, raw_body: bytes, signature_header: str
 
 
 class CalcomWebhookEndpoint(APIView):
-    """POST /api/v1/proman/calcom-webhook/
+    """POST /api/v1/bivy/calcom-webhook/
 
     Verifies HMAC signature, persists a CalcomBookingEvent (idempotently
     keyed on calcom booking id), and queues the auto-scaffold worker.

@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // See the LICENSE file for details.
 //
-// Proman feature flags — <FeatureGate> declarative wrapper.
-// Per ADR 0007 (proman repo: docs/decisions/0007-feature-flags-over-strip.md).
+// Bivy feature flags — <FeatureGate> declarative wrapper.
+// Per ADR 0007 (bivy repo: docs/decisions/0007-feature-flags-over-strip.md).
 //
 // Usage (component gating):
 //
@@ -24,12 +24,12 @@
 
 import { ReactNode } from "react";
 
-import { useProman } from "@/core/hooks/use-proman";
-import { PromanFeatureName } from "@/core/lib/proman/features";
+import { useBivy } from "@/core/hooks/use-bivy";
+import { BivyFeatureName } from "@/core/lib/bivy/features";
 
 interface FeatureGateProps {
   /** Which flag must be ON for children to render. */
-  flag: PromanFeatureName;
+  flag: BivyFeatureName;
   /** Children rendered when the flag is on. */
   children: ReactNode;
   /** Optional fallback when the flag is off. Default: render nothing. */
@@ -46,7 +46,7 @@ export function FeatureGate({
   fallback = null,
   renderWhileLoading = false,
 }: FeatureGateProps) {
-  const { features, isLoading } = useProman();
+  const { features, isLoading } = useBivy();
 
   // During initial fetch, we don't yet know if the flag is on. Default to
   // hiding (matches v1 default-off UX); pass renderWhileLoading to override.
