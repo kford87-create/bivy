@@ -1,0 +1,31 @@
+# Proman Phase 3 Step 4 (2026-06-28)
+# Per ADR 0002 — fail builds if Proman code imports from Cal.com's
+# `packages/features/ee/` directory (commercial-licensed EE code).
+#
+# We bundle Cal.com's AGPL-3.0 core as a service. Touching their EE code
+# would shift our license posture and could cost us licensing fees once we
+# cross the 30-user EE threshold. This guard catches accidental imports
+# before they ship.
+
+name: Proman — Cal.com EE Import Check
+
+on:
+  pull_request:
+    branches:
+      - proman-main
+  push:
+    branches:
+      - proman-main
+
+jobs:
+  ee-import-check:
+    name: Block imports from Cal.com EE
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Scan for Cal.com EE references
+        run: |
+          set -euo pipefail
+          ./scripts/proman/check-calcom-ee-imports.sh

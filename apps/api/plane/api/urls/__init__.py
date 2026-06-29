@@ -3,6 +3,7 @@
 # See the LICENSE file for details.
 
 from .asset import urlpatterns as asset_patterns
+from .booking import urlpatterns as booking_patterns
 from .calcom_webhook import urlpatterns as calcom_webhook_patterns
 from .cycle import urlpatterns as cycle_patterns
 from .intake import urlpatterns as intake_patterns
@@ -11,6 +12,7 @@ from .member import urlpatterns as member_patterns
 from .module import urlpatterns as module_patterns
 from .proman_features import urlpatterns as proman_features_patterns
 from .project import urlpatterns as project_patterns
+from .public_booking import urlpatterns as public_booking_patterns
 from .state import urlpatterns as state_patterns
 from .user import urlpatterns as user_patterns
 from .work_item import urlpatterns as work_item_patterns
@@ -19,6 +21,7 @@ from .sticky import urlpatterns as sticky_patterns
 
 urlpatterns = [
     *asset_patterns,
+    *booking_patterns,
     *calcom_webhook_patterns,
     *cycle_patterns,
     *intake_patterns,
@@ -27,6 +30,7 @@ urlpatterns = [
     *module_patterns,
     *proman_features_patterns,
     *project_patterns,
+    *public_booking_patterns,
     *state_patterns,
     *user_patterns,
     *work_item_patterns,

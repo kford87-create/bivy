@@ -5,6 +5,12 @@
 # Proman additions (ADR 0007 + ADR 0002)
 from .proman_features import PromanFeaturesEndpoint
 from .calcom_webhook import CalcomWebhookEndpoint
+from .public_booking import PublicBookingLinkEndpoint
+from .booking import (
+    BookingLinkViewSet,
+    BookingTemplateViewSet,
+    CalcomBookingEventReadOnlyViewSet,
+)
 
 from .project import (
     ProjectListCreateAPIEndpoint,

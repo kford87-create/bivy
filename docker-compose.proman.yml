@@ -1,0 +1,135 @@
+# Proman Phase 3 Step 3 (2026-06-28)
+# Per ADR 0002 — bundles Cal.com (AGPL-3.0) alongside Plane.
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.proman.yml up
+#
+# This OVERLAY file extends Plane's docker-compose.yml. It is intentionally
+# kept separate so quarterly upstream Plane merges (per ADR 0003) do not
+# conflict with our Cal.com additions.
+#
+# Required environment (set in .env.proman alongside Plane's .env):
+#   CALCOM_DATABASE_PASSWORD       Postgres password for the calcom DB user
+#   CALCOM_NEXTAUTH_SECRET         openssl rand -base64 32
+#   CALCOM_NEXTAUTH_URL            e.g. https://proman.app/cal
+#   CALCOM_PUBLIC_WEBAPP_URL       e.g. https://proman.app/cal
+#   CALCOM_WEBHOOK_SECRET          MUST match Proman backend's env var of same name
+#   CALCOM_ENCRYPTION_KEY          openssl rand -base64 32
+#   CALCOM_EMAIL_FROM              hello@proman.app
+#   AWS_SES_SMTP_HOST              email-smtp.us-east-1.amazonaws.com
+#   AWS_SES_SMTP_USER              SES SMTP credential user
+#   AWS_SES_SMTP_PASSWORD          SES SMTP credential password
+
+services:
+
+  # ----------------------------------------------------------------
+  # Cal.com — AGPL-3.0 scheduling substrate.
+  # Self-hosted alongside Plane in the same network. Shares the
+  # plane-db Postgres instance (separate `calcom` database).
+  # Uses AWS SES SMTP for transactional email.
+  # ----------------------------------------------------------------
+  cal:
+    container_name: proman-cal
+    image: calcom/cal.com:latest
+    restart: always
+    depends_on:
+      plane-db:
+        condition: service_started
+      cal-migrator:
+        condition: service_completed_successfully
+    environment:
+      # Database — same Postgres instance, separate database
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@plane-db:5432/calcom?schema=public
+      DATABASE_DIRECT_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@plane-db:5432/calcom?schema=public
+
+      # Auth + URLs
+      NEXTAUTH_SECRET: ${CALCOM_NEXTAUTH_SECRET}
+      NEXTAUTH_URL: ${CALCOM_NEXTAUTH_URL}
+      NEXT_PUBLIC_WEBAPP_URL: ${CALCOM_PUBLIC_WEBAPP_URL}
+
+      # Encryption (Cal.com requires for sensitive at-rest data)
+      CALENDSO_ENCRYPTION_KEY: ${CALCOM_ENCRYPTION_KEY}
+
+      # License config — keep us in AGPL-only Singleplayer scope
+      CALCOM_LICENSE_KEY: ""
+      NEXT_PUBLIC_LICENSE_CONSENT: ""
+
+      # Webhooks — Cal.com posts to Proman backend's calcom-webhook endpoint
+      # CALCOM_WEBHOOK_SECRET MUST match the Proman backend's env var of the
+      # same name (see apps/api/plane/api/views/calcom_webhook.py).
+      CALCOM_WEBHOOK_SECRET: ${CALCOM_WEBHOOK_SECRET}
+
+      # Email — AWS SES SMTP per ADR 0006 carryover
+      EMAIL_FROM: ${CALCOM_EMAIL_FROM}
+      EMAIL_SERVER_HOST: ${AWS_SES_SMTP_HOST}
+      EMAIL_SERVER_PORT: "587"
+      EMAIL_SERVER_USER: ${AWS_SES_SMTP_USER}
+      EMAIL_SERVER_PASSWORD: ${AWS_SES_SMTP_PASSWORD}
+
+      # Disable telemetry to Cal.com's analytics endpoints
+      NEXT_PUBLIC_TELEMETRY_KEY: ""
+      CALCOM_TELEMETRY_DISABLED: "1"
+
+      # Single-tenant Singleplayer mode (avoid the 30-user EE threshold)
+      NEXT_PUBLIC_DISABLE_SIGNUP: "true"
+    healthcheck:
+      test:
+        - "CMD-SHELL"
+        - "wget --spider -q http://localhost:3000/api/health || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - default
+
+  # ----------------------------------------------------------------
+  # Cal.com migrator — runs Prisma migrations on the calcom database
+  # before the cal service starts. Completes-and-exits.
+  # ----------------------------------------------------------------
+  cal-migrator:
+    container_name: proman-cal-migrator
+    image: calcom/cal.com:latest
+    restart: "no"
+    depends_on:
+      plane-db:
+        condition: service_started
+      cal-db-init:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@plane-db:5432/calcom?schema=public
+      DATABASE_DIRECT_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@plane-db:5432/calcom?schema=public
+    command: ["sh", "-c", "yarn workspace @calcom/prisma db-migrate"]
+    networks:
+      - default
+
+  # ----------------------------------------------------------------
+  # Cal.com DB bootstrap — creates the calcom database in the shared
+  # plane-db Postgres instance if it doesn't exist. Completes-and-exits.
+  # ----------------------------------------------------------------
+  cal-db-init:
+    container_name: proman-cal-db-init
+    image: postgres:15.7-alpine
+    restart: "no"
+    depends_on:
+      plane-db:
+        condition: service_started
+    environment:
+      PGHOST: plane-db
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    command:
+      - "sh"
+      - "-c"
+      - |
+        until pg_isready -h plane-db -U "$$PGUSER"; do sleep 1; done
+        psql -tc "SELECT 1 FROM pg_database WHERE datname = 'calcom'" | grep -q 1 \
+          || psql -c "CREATE DATABASE calcom"
+        echo "calcom database ready"
+    networks:
+      - default
+
+# Reuse Plane's default network so all containers can resolve each other.
+networks:
+  default:
+    name: plane_default
+    external: false
